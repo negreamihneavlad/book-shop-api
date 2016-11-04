@@ -33,6 +33,18 @@ app.get('/books', function(req, res) {
     });
 });
 
+app.get('/search/:toFind', function(req, res) {
+
+    book.search(req.params.toFind)
+        .then(function(rows) {
+            res.json(rows);
+        })
+
+    .catch(function() {
+        res.sendStatus(500);
+    });
+});
+
 app.post('/books', function(req, res) {
 
     var bookData = {

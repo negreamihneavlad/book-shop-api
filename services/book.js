@@ -3,7 +3,8 @@ module.exports = {
     update: update,
     destroy: destroy,
     list: list,
-    listOne: listOne
+    listOne: listOne,
+    search: search
 };
 
 //////////////////////////////
@@ -96,6 +97,20 @@ function listOne(bookId) {
                 reject(err);
             } else {
                 resolve(rows[0]);
+            }
+        });
+    });
+}
+
+function search(keyword) {
+    return new Promise(function(resolve, reject) {
+
+        connection.query("SELECT * FROM books WHERE ( name LIKE '%"+ keyword +"%' OR author LIKE '%"+ keyword+"%')",function(err, rows, fields) {
+        
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
             }
         });
     });
