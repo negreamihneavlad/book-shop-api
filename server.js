@@ -1,12 +1,37 @@
 var express = require('express');
 
 var app = express();
+var passport = require('passport');
+var Strategy = require('passport-http-bearer').Strategy;
 
-var book = require('./services/book.js')
+var book = require('./services/book.js');
+var user = require('./services/user.js');
 
 var bodyParser = require('body-parser');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+passport.use(new Strategy(
+    function(token, cb) {
+        user.loginWithToken(token)
+            .then(function(user) {
+                if (user) {
+                    cb(null, user);
+                } else cb(null, false);
+            })
+
+        .catch(function(err) {
+            cb(err);
+        });
+    }));
+
+// app.get('/',
+//   passport.authenticate('bearer', { session: false }),
+//   function(req,res) {
+//     res.json({ email: req.user.email});
+//   });
 
 
 app.get('/books/:bookId', function(req, res) {
@@ -75,6 +100,25 @@ app.post('/books', function(req, res) {
     .catch(function() {
         res.sendStatus(500);
     });
+});
+
+app.post('/login', function(req, res) {
+    var userData = {
+        email: req.body.email,
+        password: req.body.password,
+    };
+    user.loginWithEmail(userData)
+        .then(function(rows) {
+            console.log(rows);
+            res.set('Authorization', rows.token);
+            res.set('Access-Control-Expose-Headers', 'Authorization');
+            res.json(rows);
+
+        })
+        .catch(function() {
+            res.sendStatus(500);
+        });
+
 });
 
 app.put('/books/:bookId', function(req, res) {

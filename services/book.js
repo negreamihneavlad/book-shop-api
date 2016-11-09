@@ -19,6 +19,8 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
+
+
 function create(bookData) {
 
     return new Promise(function(resolve, reject) {
@@ -41,6 +43,8 @@ function create(bookData) {
         });
     });
 }
+
+
 
 function update(bookId, bookData) {
     return new Promise(function(resolve, reject) {
