@@ -34,6 +34,7 @@ passport.use(new Strategy(
 //   });
 
 
+
 app.get('/books/:bookId', function(req, res) {
 
     book.listOne(req.params.bookId)
@@ -109,7 +110,6 @@ app.post('/login', function(req, res) {
     };
     user.loginWithEmail(userData)
         .then(function(rows) {
-            console.log(rows);
             res.set('Authorization', rows.token);
             res.set('Access-Control-Expose-Headers', 'Authorization');
             res.json(rows);
