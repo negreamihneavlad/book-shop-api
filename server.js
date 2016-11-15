@@ -1,11 +1,15 @@
 var express = require('express');
 
 var app = express();
-var passport = require('passport');
-var Strategy = require('passport-http-bearer').Strategy;
 
-var book = require('./services/book.js');
+var passport = require('passport');
+
+var bookController = require('./controllers/book-controller.js');
+var userController = require('./controllers/user-controller.js');
+
 var user = require('./services/user.js');
+
+var authStrategy = require('./services/auth-strategy.js');
 
 var bodyParser = require('body-parser');
 
@@ -13,158 +17,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-passport.use(new Strategy(
-    function(token, cb) {
-        user.loginWithToken(token)
-            .then(function(user) {
-                if (user) {
-                    cb(null, user);
-                } else cb(null, false);
-            })
+passport.use(authStrategy);
 
-        .catch(function(err) {
-            cb(err);
-        });
-    }));
+app.get('/books/:bookId', bookController.findOne);
 
-// app.get('/',
-//   passport.authenticate('bearer', { session: false }),
-//   function(req,res) {
-//     res.json({ email: req.user.email});
-//   });
+app.get('/books', bookController.list);
 
+app.get('/search/:term', bookController.search);
 
+app.post('/books', passport.authenticate('bearer', { session: false }), bookController.create);
 
-app.get('/books/:bookId', function(req, res) {
+app.put('/books/:bookId', passport.authenticate('bearer', { session: false }), bookController.update);
 
-    book.listOne(req.params.bookId)
-        .then(function(rows) {
-            res.json(rows);
-        })
+app.delete('/books/:bookId', passport.authenticate('bearer', { session: false }), bookController.destroy);
 
-    .catch(function() {
-        res.sendStatus(500);
-    });
-});
+app.post('/login', userController.login);
 
-app.get('/books', function(req, res) {
-
-    book.list()
-        .then(function(rows) {
-            res.json(rows);
-        })
-
-    .catch(function() {
-        res.sendStatus(500);
-    });
-});
-
-app.get('/search/:toFind', function(req, res) {
-
-    book.search(req.params.toFind)
-        .then(function(rows) {
-            res.json(rows);
-        })
-
-    .catch(function() {
-        res.sendStatus(500);
-    });
-});
-
-app.post('/books', function(req, res) {
-
-    var bookData = {
-        id: req.body.id,
-        name: req.body.name,
-        author: req.body.author,
-        releaseDate: req.body.releaseDate,
-        description: req.body.description,
-        category: req.body.category,
-        picture: req.body.picture,
-        price: req.body.price
-
-    };
-    book.create(bookData)
-        .then(function(result) {
-            res.json({
-                id: result.insertId,
-                name: bookData.name,
-                author: bookData.author,
-                releaseDate: bookData.releaseDate,
-                description: req.body.description,
-                category: req.body.category,
-                picture: req.body.picture,
-                price: req.body.price
-            });
-        })
-
-    .catch(function() {
-        res.sendStatus(500);
-    });
-});
-
-app.post('/login', function(req, res) {
-    var userData = {
-        email: req.body.email,
-        password: req.body.password,
-    };
-    user.loginWithEmail(userData)
-        .then(function(rows) {
-            res.set('Authorization', rows.token);
-            res.set('Access-Control-Expose-Headers', 'Authorization');
-            res.json(rows);
-
-        })
-        .catch(function() {
-            res.sendStatus(500);
-        });
-
-});
-
-app.put('/books/:bookId', function(req, res) {
-
-    var bookData = {
-        name: req.body.name,
-        author: req.body.author,
-        releaseDate: req.body.releaseDate,
-        description: req.body.description,
-        category: req.body.category,
-        picture: req.body.picture,
-        price: req.body.price
-    };
-
-    book.update(req.params.bookId, bookData)
-        .then(function(result) {
-            res.json({
-                id: result.insertId,
-                name: bookData.name,
-                author: bookData.author,
-                releaseDate: bookData.releaseDate,
-                description: req.body.description,
-                category: req.body.category,
-                picture: req.body.picture,
-                price: req.body.price
-
-            });
-        })
-
-    .catch(function() {
-        res.sendStatus(500);
-    });
-});
-
-app.delete('/books/:bookId', function(req, res) {
-
-    book.destroy(req.params.bookId)
-        .then(function(result) {
-            res.json(result.affectedRows);
-        })
-
-    .catch(function() {
-        res.sendStatus(500);
-    });
-});
+app.post('/sign-up', userController.signUp);
 
 app.listen(3000, function() {
-    console.log('Example app listening on port 3000!');
+    console.log('Book Shop API listening on port 3000!');
 });
