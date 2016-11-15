@@ -3,13 +3,15 @@ module.exports = {
     update: update,
     destroy: destroy,
     list: list,
-    listOne: listOne,
+    findOne: findOne,
     search: search
 };
 
 //////////////////////////////
 
 var mysql = require('mysql');
+var _ = require('lodash');
+
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -19,26 +21,14 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-
-
 function create(bookData) {
 
     return new Promise(function(resolve, reject) {
         connection.query('INSERT INTO books SET ?', bookData, function(err, result) {
-        	debugger;
             if (err) {
                 reject(err);
             } else {
-                resolve({
-                    id: result.insertId,
-                    name: bookData.name,
-                    author: bookData.author,
-                    releaseDate: bookData.releaseDate,
-                    description: bookData.description,
-                    category: bookData.category,
-                    picture: bookData.picture,
-                    price: bookData.price
-                });
+                resolve(_.assign({}, bookData, { id: result.insertId }));
             }
         });
     });
@@ -48,22 +38,11 @@ function create(bookData) {
 
 function update(bookId, bookData) {
     return new Promise(function(resolve, reject) {
-        // console.log(bookId);
         connection.query("UPDATE books SET ? WHERE ?", [bookData, { id: bookId }], function(err, result) {
             if (err) {
                 reject(err);
             } else {
-                // console.log(result);
-                resolve({
-                    id: bookId,
-                    name: bookData.name,
-                    author: bookData.author,
-                    releaseDate: bookData.releaseDate,
-                    description: bookData.description,
-                    category: bookData.category,
-                    picture: bookData.picture,
-                    price: bookData.price
-                });
+                resolve(_.assign({}, bookData, { id: bookId}));
             }
         });
     });
@@ -76,7 +55,7 @@ function destroy(bookId) {
             if (err) {
                 reject(err);
             } else {
-                resolve(result.affectedRows);
+                resolve();
             }
         });
     });
@@ -94,7 +73,7 @@ function list() {
     });
 }
 
-function listOne(bookId) {
+function findOne(bookId) {
     return new Promise(function(resolve, reject) {
         connection.query('SELECT * FROM books WHERE id= ?', bookId, function(err, rows, fields) {
             if (err) {

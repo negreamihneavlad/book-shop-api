@@ -1,11 +1,16 @@
 module.exports = {
     loginWithEmail: loginWithEmail,
-    loginWithToken: loginWithToken
+    loginWithToken: loginWithToken,
+    signUp: signUp
 };
 
 //////////////////////////////
 
 var mysql = require('mysql');
+var md5 = require('md5');
+var randomstring = require("randomstring");
+var _ = require('lodash');
+
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -14,9 +19,6 @@ var connection = mysql.createConnection({
 });
 
 connection.connect();
-
-var md5 = require('md5');
-
 
 function loginWithEmail(user) {
 
@@ -42,4 +44,20 @@ function loginWithToken(token, cb) {
             }
         });
     });
+}
+
+function signUp(user) {
+    user.password = md5(user.password);
+    user.token = randomstring.generate();
+    user.isAdmin = 0;
+    return new Promise(function(resolve, reject) {
+        connection.query('INSERT INTO users SET ?', user, function(err, result) {
+            if (err) {
+                reject(err);
+            } else {
+               resolve(_.assign({}, user, { id: result.insertId }));
+            }
+        });
+    });
+
 }
