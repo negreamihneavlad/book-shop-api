@@ -19,11 +19,14 @@ var connection = mysql.createConnection({
 });
 
 connection.connect();
-
+/**
+ *
+ * @param user
+ */
 function loginWithEmail(user) {
 
-    return new Promise(function(resolve, reject) {
-        connection.query("SELECT * FROM users WHERE (email='" + user.email + "' AND password='" + md5(user.password) + "')", function(err, rows, result) {
+    return new Promise(function (resolve, reject) {
+        connection.query("SELECT * FROM users WHERE (email='" + user.email + "' AND password='" + md5(user.password) + "')", function (err, rows, result) {
             if (err) {
                 reject(err);
             } else {
@@ -32,11 +35,15 @@ function loginWithEmail(user) {
         });
     });
 }
-
+/**
+ *
+ * @param token
+ * @param cb
+ */
 function loginWithToken(token, cb) {
 
-    return new Promise(function(resolve, reject) {
-        connection.query("SELECT * FROM users WHERE token='" + token + "'", function(err, rows, result) {
+    return new Promise(function (resolve, reject) {
+        connection.query("SELECT * FROM users WHERE token='" + token + "'", function (err, rows, result) {
             if (err) {
                 reject(err);
             } else {
@@ -45,17 +52,20 @@ function loginWithToken(token, cb) {
         });
     });
 }
-
+/**
+ *
+ * @param user
+ */
 function signUp(user) {
     user.password = md5(user.password);
     user.token = randomstring.generate();
     user.isAdmin = 0;
-    return new Promise(function(resolve, reject) {
-        connection.query('INSERT INTO users SET ?', user, function(err, result) {
+    return new Promise(function (resolve, reject) {
+        connection.query('INSERT INTO users SET ?', user, function (err, result) {
             if (err) {
                 reject(err);
             } else {
-               resolve(_.assign({}, user, { id: result.insertId }));
+                resolve(_.assign({}, user, {id: result.insertId}));
             }
         });
     });

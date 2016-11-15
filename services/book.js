@@ -20,38 +20,48 @@ var connection = mysql.createConnection({
 });
 
 connection.connect();
-
+/**
+ *
+ * @param bookData
+ */
 function create(bookData) {
 
-    return new Promise(function(resolve, reject) {
-        connection.query('INSERT INTO books SET ?', bookData, function(err, result) {
+    return new Promise(function (resolve, reject) {
+        connection.query('INSERT INTO books SET ?', bookData, function (err, result) {
             if (err) {
                 reject(err);
             } else {
-                resolve(_.assign({}, bookData, { id: result.insertId }));
+                resolve(_.assign({}, bookData, {id: result.insertId}));
             }
         });
     });
 }
 
 
-
+/**
+ *
+ * @param bookId
+ * @param bookData
+ */
 function update(bookId, bookData) {
-    return new Promise(function(resolve, reject) {
-        connection.query("UPDATE books SET ? WHERE ?", [bookData, { id: bookId }], function(err, result) {
+    return new Promise(function (resolve, reject) {
+        connection.query("UPDATE books SET ? WHERE ?", [bookData, {id: bookId}], function (err, result) {
             if (err) {
                 reject(err);
             } else {
-                resolve(_.assign({}, bookData, { id: bookId}));
+                resolve(_.assign({}, bookData, {id: bookId}));
             }
         });
     });
 }
-
+/**
+ *
+ * @param bookId
+ */
 function destroy(bookId) {
 
-    return new Promise(function(resolve, reject) {
-        connection.query('DELETE FROM books WHERE id= ?', bookId, function(err, result) {
+    return new Promise(function (resolve, reject) {
+        connection.query('DELETE FROM books WHERE id= ?', bookId, function (err, result) {
             if (err) {
                 reject(err);
             } else {
@@ -62,8 +72,8 @@ function destroy(bookId) {
 }
 
 function list() {
-    return new Promise(function(resolve, reject) {
-        connection.query('SELECT * FROM books', function(err, rows, fields) {
+    return new Promise(function (resolve, reject) {
+        connection.query('SELECT * FROM books', function (err, rows, fields) {
             if (err) {
                 reject(err);
             } else {
@@ -72,10 +82,13 @@ function list() {
         });
     });
 }
-
+/**
+ *
+ * @param bookId
+ */
 function findOne(bookId) {
-    return new Promise(function(resolve, reject) {
-        connection.query('SELECT * FROM books WHERE id= ?', bookId, function(err, rows, fields) {
+    return new Promise(function (resolve, reject) {
+        connection.query('SELECT * FROM books WHERE id= ?', bookId, function (err, rows, fields) {
             if (err) {
                 reject(err);
             } else {
@@ -84,12 +97,15 @@ function findOne(bookId) {
         });
     });
 }
-
+/**
+ *
+ * @param keyword
+ */
 function search(keyword) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
 
-        connection.query("SELECT * FROM books WHERE ( name LIKE '%"+ keyword +"%' OR author LIKE '%"+ keyword+"%')",function(err, rows, fields) {
-        
+        connection.query("SELECT * FROM books WHERE ( name LIKE '%" + keyword + "%' OR author LIKE '%" + keyword + "%')", function (err, rows, fields) {
+
             if (err) {
                 reject(err);
             } else {
