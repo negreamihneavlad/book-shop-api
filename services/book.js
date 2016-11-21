@@ -21,11 +21,11 @@ var connection = mysql.createConnection({
 
 connection.connect();
 /**
+ * Insert new book
  *
  * @param bookData
  */
 function create(bookData) {
-
     return new Promise(function (resolve, reject) {
         connection.query('INSERT INTO books SET ?', bookData, function (err, result) {
             if (err) {
@@ -39,6 +39,7 @@ function create(bookData) {
 
 
 /**
+ * Update book data
  *
  * @param bookId
  * @param bookData
@@ -55,6 +56,7 @@ function update(bookId, bookData) {
     });
 }
 /**
+ * Removes a book
  *
  * @param bookId
  */
@@ -70,7 +72,9 @@ function destroy(bookId) {
         });
     });
 }
-
+/**
+ * Returns all books
+ */
 function list() {
     return new Promise(function (resolve, reject) {
         connection.query('SELECT * FROM books', function (err, rows, fields) {
@@ -83,6 +87,7 @@ function list() {
     });
 }
 /**
+ * Returns searched book after id
  *
  * @param bookId
  */
@@ -98,12 +103,12 @@ function findOne(bookId) {
     });
 }
 /**
+ * Returns searched book after name or author
  *
  * @param keyword
  */
 function search(keyword) {
     return new Promise(function (resolve, reject) {
-
         connection.query("SELECT * FROM books WHERE ( name LIKE '%" + keyword + "%' OR author LIKE '%" + keyword + "%')", function (err, rows, fields) {
 
             if (err) {
