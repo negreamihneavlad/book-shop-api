@@ -11,6 +11,7 @@ module.exports = {
 
 }
 /**
+ * Search one book by id
  *
  * @param req
  * @param res
@@ -25,6 +26,7 @@ function findOne(req, res) {
         });
 }
 /**
+ * Get all books
  *
  * @param req
  * @param res
@@ -39,6 +41,7 @@ function list(req, res) {
         });
 }
 /**
+ * Search books by name or author
  *
  * @param req
  * @param res
@@ -53,6 +56,7 @@ function search(req, res) {
         });
 }
 /**
+ * Create book
  *
  * @param req
  * @param res
@@ -68,6 +72,7 @@ function create(req, res) {
         });
 }
 /**
+ * Update book details
  *
  * @param req
  * @param res
@@ -82,6 +87,7 @@ function update(req, res) {
         });
 }
 /**
+ * Remove book
  *
  * @param req
  * @param res
