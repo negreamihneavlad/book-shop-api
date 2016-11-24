@@ -4,7 +4,8 @@ module.exports = {
     destroy: destroy,
     list: list,
     findOne: findOne,
-    search: search
+    search: search,
+    searchFilters: searchFilters
 };
 
 //////////////////////////////
@@ -109,8 +110,28 @@ function findOne(bookId) {
  */
 function search(keyword) {
     return new Promise(function (resolve, reject) {
-        connection.query("SELECT * FROM books WHERE ( name LIKE '%" + keyword + "%' OR author LIKE '%" + keyword + "%')", function (err, rows, fields) {
+        connection.query("SELECT * FROM books WHERE ( name LIKE '%" + keyword + "%' OR author LIKE '%" + keyword + "%' OR category LIKE '%" + keyword + "%' OR publisher LIKE '%" + keyword + "%')", function (err, rows, fields) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
 
+function searchFilters(keyword) {
+    if (keyword.author === 'undefined'){
+        keyword.author='';
+    }
+    if (keyword.publisher === 'undefined'){
+        keyword.publisher='';
+    }
+    if (keyword.category === 'undefined'){
+        keyword.category='';
+    }
+    return new Promise(function (resolve, reject) {
+        connection.query("SELECT * FROM books WHERE (author LIKE '%" + keyword.author + "%' AND category LIKE '%" + keyword.category + "%' AND publisher LIKE '%" + keyword.publisher + "%')", function (err, rows, fields) {
             if (err) {
                 reject(err);
             } else {
