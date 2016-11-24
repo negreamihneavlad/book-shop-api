@@ -7,7 +7,8 @@ module.exports = {
     search: search,
     create: create,
     update: update,
-    destroy: destroy
+    destroy: destroy,
+    searchFilters: searchFilters
 
 }
 /**
@@ -48,6 +49,15 @@ function list(req, res) {
  */
 function search(req, res) {
     book.search(req.params.term)
+        .then(function (books) {
+            res.json(books);
+        })
+        .catch(function (err) {
+            res.status(500).send(err);
+        });
+}
+function searchFilters(req, res) {
+    book.searchFilters(req.query)
         .then(function (books) {
             res.json(books);
         })
