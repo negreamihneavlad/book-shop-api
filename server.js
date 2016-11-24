@@ -12,7 +12,7 @@ var authStrategy = require('./services/auth-strategy.js');
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: false}));
 
 
 passport.use(authStrategy);
@@ -22,6 +22,8 @@ app.get('/books/:bookId', bookController.findOne);
 app.get('/books', bookController.list);
 
 app.get('/search/:term', bookController.search);
+
+app.get('/search-filters', bookController.searchFilters);
 
 app.post('/books', passport.authenticate('bearer', {session: false}), bookController.create);
 
