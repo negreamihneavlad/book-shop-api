@@ -108,9 +108,18 @@ function findOne(bookId) {
  *
  * @param keyword
  */
-function search(keyword) {
+function search(toFind,keyword) {
+    if (keyword.author === 'undefined'){
+        keyword.author='';
+    }
+    if (keyword.publisher === 'undefined'){
+        keyword.publisher='';
+    }
+    if (keyword.category === 'undefined'){
+        keyword.category='';
+    }
     return new Promise(function (resolve, reject) {
-        connection.query("SELECT * FROM books WHERE ( name LIKE '%" + keyword + "%' OR author LIKE '%" + keyword + "%' OR category LIKE '%" + keyword + "%' OR publisher LIKE '%" + keyword + "%')", function (err, rows, fields) {
+        connection.query("SELECT * FROM books WHERE ( (name LIKE '%" + toFind + "%' OR author LIKE '%" + toFind + "%' OR category LIKE '%" + toFind + "%' OR publisher LIKE '%" + toFind + "%') AND (author LIKE '%" + keyword.author + "%' AND category LIKE '%" + keyword.category + "%' AND publisher LIKE '%" + keyword.publisher + "%'))", function (err, rows, fields) {
             if (err) {
                 reject(err);
             } else {
