@@ -48,7 +48,7 @@ function list(req, res) {
  * @param res
  */
 function search(req, res) {
-    book.search(req.params.term)
+    book.search(req.params.term,req.query)
         .then(function (books) {
             res.json(books);
         })
