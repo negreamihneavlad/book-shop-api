@@ -4,7 +4,7 @@ module.exports = {
     signUp: signUp,
     update: update,
     updatePassword: updatePassword,
-    forgotPassword: forgotPassword,
+    generatePasswordResetToken: generatePasswordResetToken,
     resetPassword: resetPassword
 };
 
@@ -115,16 +115,19 @@ function updatePassword(userData, newUserData) {
 /**
  *Insert at user details forgot password token
  *
- * @param user
+ * @param email
  */
-function forgotPassword(user) {
-    user.forgotPasswordToken = randomstring.generate();
+function generatePasswordResetToken(email) {
+    var forgotPasswordToken = randomstring.generate();
     return new Promise(function (resolve, reject) {
-        connection.query("UPDATE users SET ? WHERE ?", [{forgotPasswordToken: user.forgotPasswordToken}, {email: user.email}], function (err, result) {
+        connection.query("UPDATE users SET ? WHERE ?", [{forgotPasswordToken: forgotPasswordToken}, {email: email}], function (err, result) {
             if (err) {
                 reject(err);
             } else {
-                resolve(user);
+                resolve({
+                    email: email,
+                    forgotPasswordToken: forgotPasswordToken
+                });
             }
         });
     });
