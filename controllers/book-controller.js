@@ -1,16 +1,15 @@
-var book = require('../services/book.js');
-var _ = require('lodash');
-
 module.exports = {
     findOne: findOne,
     list: list,
     search: search,
     create: create,
     update: update,
-    destroy: destroy,
-    searchFilters: searchFilters
+    destroy: destroy
 
-}
+};
+
+var book = require('../services/book.js');
+
 /**
  * Search one book by id
  *
@@ -33,7 +32,7 @@ function findOne(req, res) {
  * @param res
  */
 function list(req, res) {
-    book.list()
+    book.list(req.query)
         .then(function (books) {
             res.json(books);
         })
@@ -42,22 +41,13 @@ function list(req, res) {
         });
 }
 /**
- * Search books by name or author
+ * Search books by name or author and filters
  *
  * @param req
  * @param res
  */
 function search(req, res) {
-    book.search(req.params.term,req.query)
-        .then(function (books) {
-            res.json(books);
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
-}
-function searchFilters(req, res) {
-    book.searchFilters(req.query)
+    book.search(req.query)
         .then(function (books) {
             res.json(books);
         })
