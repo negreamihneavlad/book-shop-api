@@ -4,8 +4,7 @@ module.exports = {
     destroy: destroy,
     list: list,
     findOne: findOne,
-    search: search,
-    searchFilters: searchFilters
+    search: search
 };
 
 //////////////////////////////
@@ -38,7 +37,6 @@ function create(bookData) {
     });
 }
 
-
 /**
  * Update book data
  *
@@ -62,7 +60,6 @@ function update(bookId, bookData) {
  * @param bookId
  */
 function destroy(bookId) {
-
     return new Promise(function (resolve, reject) {
         connection.query('DELETE FROM books WHERE id= ?', bookId, function (err, result) {
             if (err) {
@@ -75,10 +72,16 @@ function destroy(bookId) {
 }
 /**
  * Returns all books
+ *
+ * @param keywords
  */
-function list() {
+function list(keywords) {
     return new Promise(function (resolve, reject) {
-        connection.query('SELECT * FROM books', function (err, rows, fields) {
+        connection.query("SELECT * FROM books WHERE (author LIKE ? AND category LIKE ? AND publisher LIKE ?)", [
+            "%" + _.get(keywords, "author", "") + "%",
+            "%" + _.get(keywords, "category", "") + "%",
+            "%" + _.get(keywords, "publisher", "") + "%"
+        ], function (err, rows, fields) {
             if (err) {
                 reject(err);
             } else {
@@ -106,20 +109,15 @@ function findOne(bookId) {
 /**
  * Returns searched book after name or author
  *
- * @param keyword
+ * @param keywords
  */
-function search(toFind,keyword) {
-    if (keyword.author === 'undefined'){
-        keyword.author='';
-    }
-    if (keyword.publisher === 'undefined'){
-        keyword.publisher='';
-    }
-    if (keyword.category === 'undefined'){
-        keyword.category='';
-    }
+function search(keywords) {
     return new Promise(function (resolve, reject) {
-        connection.query("SELECT * FROM books WHERE ( (name LIKE '%" + toFind + "%' OR author LIKE '%" + toFind + "%' OR category LIKE '%" + toFind + "%' OR publisher LIKE '%" + toFind + "%') AND (author LIKE '%" + keyword.author + "%' AND category LIKE '%" + keyword.category + "%' AND publisher LIKE '%" + keyword.publisher + "%'))", function (err, rows, fields) {
+        connection.query("SELECT * FROM books WHERE ( (name LIKE '%" + keywords.toFind + "%' OR author LIKE '%" + keywords.toFind + "%' OR category LIKE '%" + keywords.toFind + "%' OR publisher LIKE '%" + keywords.toFind + "%') AND (author LIKE ? AND category LIKE ? AND publisher LIKE ? ))",[
+            "%" + _.get(keywords, "author", "") + "%",
+            "%" + _.get(keywords, "category", "") + "%",
+            "%" + _.get(keywords, "publisher", "") + "%"
+        ], function (err, rows, fields) {
             if (err) {
                 reject(err);
             } else {
@@ -129,23 +127,3 @@ function search(toFind,keyword) {
     });
 }
 
-function searchFilters(keyword) {
-    if (keyword.author === 'undefined'){
-        keyword.author='';
-    }
-    if (keyword.publisher === 'undefined'){
-        keyword.publisher='';
-    }
-    if (keyword.category === 'undefined'){
-        keyword.category='';
-    }
-    return new Promise(function (resolve, reject) {
-        connection.query("SELECT * FROM books WHERE (author LIKE '%" + keyword.author + "%' AND category LIKE '%" + keyword.category + "%' AND publisher LIKE '%" + keyword.publisher + "%')", function (err, rows, fields) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-}
