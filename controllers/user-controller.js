@@ -1,6 +1,3 @@
-var user = require('../services/user.js');
-var mail = require('../services/mail.js');
-
 module.exports = {
     login: login,
     signUp: signUp,
@@ -8,7 +5,11 @@ module.exports = {
     updatePassword: updatePassword,
     forgotPassword: forgotPassword,
     resetPassword: resetPassword
-}
+};
+
+var user = require('../services/user.js');
+var mail = require('../services/mail.js');
+
 /**
  * Searches for user email and password
  *
@@ -25,7 +26,6 @@ function login(req, res) {
         .catch(function (err) {
             res.status(500).send(err);
         });
-
 }
 /**
  * Add a new user
@@ -79,21 +79,24 @@ function updatePassword(req, res) {
  * @param res
  */
 function forgotPassword(req, res) {
-    user.forgotPassword(req.body)
-        .then(function (user) {
-            mail.emailChangePassword(user)
-                .then(function (user) {
-                    res.json(user);
-                })
-                .catch(function (err) {
-                    console.log("1",err);
-                    res.status(500).send(err);
-                });
-        })
+    user.generatePasswordResetToken(req.body.email)
+        .then(sendPasswordResetLink)
         .catch(function (err) {
-            console.log("2",err);
             res.status(500).send(err);
         });
+
+    /**
+     * Send the password reset email.
+     *
+     * @param passwordResetData
+     * @returns {Promise.<T>}
+     */
+    function sendPasswordResetLink(passwordResetData) {
+        return mail.send(passwordResetData)
+            .then(function () {
+                res.json();
+            });
+    }
 
 }
 /**
