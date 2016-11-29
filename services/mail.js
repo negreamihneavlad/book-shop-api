@@ -13,7 +13,8 @@ var transporter = nodemailer.createTransport('smtps://bookshopwebsite@gmail.com:
  *
  * @param passwordResetData
  */
-function send(passwordResetData){
+function send(passwordResetData) {
+    console.log('test', passwordResetData);
     return transporter.sendMail(password.emailPasswordResetLink(passwordResetData));
-}
 
+}

@@ -8,6 +8,9 @@ module.exports = {
 
 };
 
+//////////////////////////////
+
+var _ = require('lodash');
 var book = require('../services/book.js');
 
 /**
@@ -16,8 +19,13 @@ var book = require('../services/book.js');
  * @param req
  * @param res
  */
+
 function findOne(req, res) {
-    book.findOne(req.params.bookId)
+    book.findOne({
+        where: {
+            id: req.params.bookId
+        }
+    })
         .then(function (book) {
             res.json(book);
         })
@@ -31,8 +39,17 @@ function findOne(req, res) {
  * @param req
  * @param res
  */
+
 function list(req, res) {
-    book.list(req.query)
+    book.findAll({
+        where: {
+            $and: [
+                {author: {$like: '%' + _.get(req.query, 'author', '') + '%'}},
+                {category: {$like: '%' + _.get(req.query, 'category', '') + '%'}},
+                {publisher: {$like: '%' + _.get(req.query, 'publisher', '') + '%'}}
+            ]
+        }
+    })
         .then(function (books) {
             res.json(books);
         })
@@ -47,7 +64,21 @@ function list(req, res) {
  * @param res
  */
 function search(req, res) {
-    book.search(req.query)
+    book.findAll({
+        where: {
+            $or: [
+                {name: {$like: '%' + req.query.toFind + '%'}},
+                {author: {$like: '%' + req.query.toFind + '%'}},
+                {category: {$like: '%' + req.query.toFind + '%'}},
+                {publisher: {$like: '%' + req.query.toFind + '%'}}
+            ],
+            $and: [
+                {author: {$like: '%' + _.get(req.query, 'author', '') + '%'}},
+                {category: {$like: '%' + _.get(req.query, 'category', '') + '%'}},
+                {publisher: {$like: '%' + _.get(req.query, 'publisher', '') + '%'}}
+            ]
+        }
+    })
         .then(function (books) {
             res.json(books);
         })
@@ -64,7 +95,6 @@ function search(req, res) {
 function create(req, res) {
     book.create(req.body)
         .then(function (book) {
-            console.log(book);
             res.json(book);
         })
         .catch(function (err) {
@@ -78,9 +108,24 @@ function create(req, res) {
  * @param res
  */
 function update(req, res) {
-    book.update(req.params.bookId, req.body)
-        .then(function (book) {
-            res.json(book);
+    book.update(req.body, {
+        where: {
+            id: req.params.bookId
+        }
+    })
+        .then(function () {
+            book.findOne({
+                    where: {
+                        id: req.params.bookId
+                    }
+                }
+            ).then(function (bookSaved) {
+                res.json(bookSaved);
+            })
+                .catch(function (err) {
+                    res.status(500).send(err);
+                });
+
         })
         .catch(function (err) {
             res.status(500).send(err);
@@ -93,7 +138,8 @@ function update(req, res) {
  * @param res
  */
 function destroy(req, res) {
-    book.destroy(req.params.bookId)
+    console.log(req.params.bookId);
+    book.destroy({where: {id: req.params.bookId}})
         .then(function () {
             res.json();
         })

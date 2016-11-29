@@ -13,9 +13,11 @@
     "express": "^4.14.0",
     "lodash": "^4.17.0",
     "md5": "^2.2.1",
+    "mysql2": "^1.1.2",
     "nodemailer": "^2.6.4",
     "passport": "^0.3.2",
     "passport-http-bearer": "^1.0.1",
-    "randomstring": "^1.1.5"
+    "randomstring": "^1.1.5",
+    "sequelize": "^3.27.0"
   }
 }

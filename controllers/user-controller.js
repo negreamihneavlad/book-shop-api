@@ -7,8 +7,12 @@ module.exports = {
     resetPassword: resetPassword
 };
 
+//////////////////////////////
+
 var user = require('../services/user.js');
 var mail = require('../services/mail.js');
+var md5 = require('md5');
+var randomstring = require("randomstring");
 
 /**
  * Searches for user email and password
@@ -17,7 +21,14 @@ var mail = require('../services/mail.js');
  * @param res
  */
 function login(req, res) {
-    user.loginWithEmail(req.body)
+    user.findOne({
+        where: {
+            $and: [
+                {email: req.body.email},
+                {password: md5(req.body.password)}
+            ]
+        }
+    })
         .then(function (user) {
             res.set('Authorization', user.authToken);
             res.set('Access-Control-Expose-Headers', 'Authorization');
@@ -34,7 +45,10 @@ function login(req, res) {
  * @param res
  */
 function signUp(req, res) {
-    user.signUp(req.body)
+    req.body.password = md5(req.body.password);
+    req.body.authToken = randomstring.generate();
+    req.body.isAdmin = 0;
+    user.create(req.body)
         .then(function (user) {
             res.json(user);
         })
@@ -49,9 +63,23 @@ function signUp(req, res) {
  * @param res
  */
 function update(req, res) {
-    user.update(req.user.id, req.body)
-        .then(function (user) {
-            res.json(user);
+    user.update(req.body, {
+        where: {
+            id: req.user.id
+        }
+    })
+        .then(function () {
+            user.findOne({
+                    where: {
+                        id: req.user.id
+                    }
+                }
+            ).then(function (userSaved) {
+                res.json(userSaved);
+            })
+                .catch(function (err) {
+                    res.status(500).send(err);
+                });
         })
         .catch(function (err) {
             res.status(500).send(err);
@@ -64,9 +92,23 @@ function update(req, res) {
  * @param res
  */
 function updatePassword(req, res) {
-    user.updatePassword(req.user, req.body)
-        .then(function (user) {
-            res.json(user);
+    user.update({password: md5(req.body.password)}, {
+        where: {
+            id: req.user.id
+        }
+    })
+        .then(function () {
+            user.findOne({
+                    where: {
+                        id: req.user.id
+                    }
+                }
+            ).then(function (userSaved) {
+                res.json(userSaved);
+            })
+                .catch(function (err) {
+                    res.status(500).send(err);
+                });
         })
         .catch(function (err) {
             res.status(500).send(err);
@@ -79,8 +121,18 @@ function updatePassword(req, res) {
  * @param res
  */
 function forgotPassword(req, res) {
-    user.generatePasswordResetToken(req.body.email)
-        .then(sendPasswordResetLink)
+    var forgotPasswordToken = randomstring.generate();
+    var passwordResetData = {
+      email: req.body.email,
+      forgotPasswordToken: forgotPasswordToken
+    };
+    console.log(passwordResetData);
+    user.update({forgotPasswordToken: forgotPasswordToken}, {
+        where: {
+            email: req.body.email
+        }
+    })
+        .then(sendPasswordResetLink(passwordResetData))
         .catch(function (err) {
             res.status(500).send(err);
         });
@@ -106,10 +158,24 @@ function forgotPassword(req, res) {
  * @param res
  */
 function resetPassword(req, res) {
-    console.log(req.body);
-    user.resetPassword(req.body)
-        .then(function (user) {
-            res.json(user);
+    console.log(req.body.code);
+    user.update({password: md5(req.body.password)}, {
+        where: {
+            forgotPasswordToken: req.body.code
+        }
+    })
+        .then(function () {
+            user.findOne({
+                    where: {
+                        forgotPasswordToken: req.body.code
+                    }
+                }
+            ).then(function (userSaved) {
+                res.json(userSaved);
+            })
+                .catch(function (err) {
+                    res.status(500).send(err);
+                });
         })
         .catch(function (err) {
             res.status(500).send(err);

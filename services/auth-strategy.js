@@ -4,7 +4,11 @@ var user = require('./user.js');
 
 module.exports = new Strategy(
     function (token, cb) {
-        user.loginWithToken(token)
+        user.findOne({
+            where: {
+                authToken: token
+            }
+        })
             .then(function (user) {
                 if (user) {
                     cb(null, user);
