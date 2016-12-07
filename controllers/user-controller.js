@@ -123,8 +123,8 @@ function updatePassword(req, res) {
 function forgotPassword(req, res) {
     var forgotPasswordToken = randomstring.generate();
     var passwordResetData = {
-      email: req.body.email,
-      forgotPasswordToken: forgotPasswordToken
+        email: req.body.email,
+        forgotPasswordToken: forgotPasswordToken
     };
     console.log(passwordResetData);
     user.update({forgotPasswordToken: forgotPasswordToken}, {
