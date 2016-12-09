@@ -23,6 +23,10 @@ app.use(function (req, res, next) {
 //////////Books
 app.get('/books/:bookId', bookController.findOne);
 app.get('/books', bookController.list);
+app.get('/categories', bookController.categories);
+app.get('/publishers', bookController.publishers);
+app.get('/authors', bookController.authors);
+app.get('/length', bookController.length);
 app.get('/search', bookController.search);
 app.post('/books', passport.authenticate('bearer', {session: false}), bookController.create);
 app.put('/books/:bookId', passport.authenticate('bearer', {session: false}), bookController.update);
