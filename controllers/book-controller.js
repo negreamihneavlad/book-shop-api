@@ -9,7 +9,6 @@ module.exports = {
     create: create,
     update: update,
     destroy: destroy
-
 };
 
 //////////////////////////////
@@ -65,6 +64,7 @@ function list(req, res) {
             res.status(500).send(err);
         });
 }
+
 /**
  * Get categories
  *
@@ -153,6 +153,8 @@ function length(req, res) {
  */
 function search(req, res) {
     book.findAll({
+        offset: (req.query.page - 1) * 10,
+        limit: 10,
         where: {
             $or: [
                 {name: {$like: '%' + req.query.toFind + '%'}},
