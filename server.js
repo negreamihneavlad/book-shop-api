@@ -39,6 +39,7 @@ app.put('/account/edit', passport.authenticate('bearer', {session: false}), user
 app.put('/account/edit/change-password', passport.authenticate('bearer', {session: false}), userController.updatePassword);
 app.put('/account/forgot-password', userController.forgotPassword);
 app.put('/account/reset-password', userController.resetPassword);
+app.get('/checkEmail', userController.existingEmail);
 
 app.listen(3000, function () {
     console.log('Book Shop API listening on port 3000!');

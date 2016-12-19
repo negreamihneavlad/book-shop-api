@@ -4,7 +4,8 @@ module.exports = {
     update: update,
     updatePassword: updatePassword,
     forgotPassword: forgotPassword,
-    resetPassword: resetPassword
+    resetPassword: resetPassword,
+    existingEmail: existingEmail
 };
 
 //////////////////////////////
@@ -92,9 +93,13 @@ function update(req, res) {
  * @param res
  */
 function updatePassword(req, res) {
+    console.log(req.body);
     user.update({password: md5(req.body.password)}, {
         where: {
-            id: req.user.id
+            $and: [
+                {id: req.user.id},
+                {password: md5(req.body.oldPassword)}
+            ]
         }
     })
         .then(function () {
@@ -176,6 +181,26 @@ function resetPassword(req, res) {
                 .catch(function (err) {
                     res.status(500).send(err);
                 });
+        })
+        .catch(function (err) {
+            res.status(500).send(err);
+        });
+}
+
+function existingEmail(req,res) {
+    console.log(req.query.email);
+    user.findAll({
+        where: {
+            email: req.query.email
+        }
+    })
+        .then(function (user) {
+            if (user.length == 1){
+                res.send({email_exists: true});
+            }
+            else {
+                res.send({email_exists: false});
+            }
         })
         .catch(function (err) {
             res.status(500).send(err);
