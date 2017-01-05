@@ -128,16 +128,17 @@ function updatePassword(req, res) {
 function forgotPassword(req, res) {
     var forgotPasswordToken = randomstring.generate();
     var passwordResetData = {
+        type: "password",
         email: req.body.email,
         forgotPasswordToken: forgotPasswordToken
     };
-    console.log(passwordResetData);
+
     user.update({forgotPasswordToken: forgotPasswordToken}, {
         where: {
             email: req.body.email
         }
     })
-        .then(sendPasswordResetLink(passwordResetData))
+        .then(sendPasswordResetLink())
         .catch(function (err) {
             res.status(500).send(err);
         });
@@ -145,10 +146,9 @@ function forgotPassword(req, res) {
     /**
      * Send the password reset email.
      *
-     * @param passwordResetData
      * @returns {Promise.<T>}
      */
-    function sendPasswordResetLink(passwordResetData) {
+    function sendPasswordResetLink() {
         return mail.send(passwordResetData)
             .then(function () {
                 res.json();
@@ -186,7 +186,12 @@ function resetPassword(req, res) {
             res.status(500).send(err);
         });
 }
-
+/**
+ * Checks if email is already registered
+ *
+ * @param req
+ * @param res
+ */
 function existingEmail(req,res) {
     console.log(req.query.email);
     user.findAll({
