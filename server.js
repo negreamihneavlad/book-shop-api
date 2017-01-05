@@ -1,10 +1,14 @@
+require('dotenv').config();
 var express = require('express');
 var passport = require('passport');
 var bookController = require('./controllers/book-controller.js');
 var userController = require('./controllers/user-controller.js');
+var orderController = require('./controllers/order-controller.js');
+var orderItemController = require('./controllers/order-item-controller.js');
+var shippingController = require('./controllers/shipping-controller.js');
+var checkOutController = require('./controllers/check-out-controller.js');
 var authStrategy = require('./services/auth-strategy.js');
 var bodyParser = require('body-parser');
-
 
 var app = express();
 
@@ -40,6 +44,27 @@ app.put('/account/edit/change-password', passport.authenticate('bearer', {sessio
 app.put('/account/forgot-password', userController.forgotPassword);
 app.put('/account/reset-password', userController.resetPassword);
 app.get('/checkEmail', userController.existingEmail);
+
+//////////Orders
+app.post('/order', orderController.create);
+app.get('/order', passport.authenticate('bearer', {session: false}), orderController.checkOrder);
+app.delete('/order', orderController.destroy);
+
+//////////Order Items
+app.post('/orderItem', orderItemController.create);
+app.get('/orderItem', orderItemController.list);
+app.put('/orderItem/:itemId', orderItemController.update);
+app.delete('/orderItem/:itemId', orderItemController.destroy);
+
+//////////Shipping Details
+app.post('/shipping', shippingController.create);
+app.get('/shipping', shippingController.list);
+app.put('/shipping/:shippingId', shippingController.update);
+app.delete('/shipping', shippingController.destroy);
+
+//////////Check out
+app.post('/check-out', checkOutController.checkOut);
+
 
 app.listen(3000, function () {
     console.log('Book Shop API listening on port 3000!');

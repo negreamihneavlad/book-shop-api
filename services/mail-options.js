@@ -7,18 +7,18 @@ module.exports = {
 /**
  * Create mail options to be sended
  *
- * @param passwordResetData
+ * @param data
  * @returns {{from: string, to: *, subject: string, text: string}|*}
  */
-function emailPasswordResetLink(passwordResetData) {
+function emailPasswordResetLink(data) {
     var mailOptions;
 
     mailOptions = {
         from: '"Book Shop" <bookshopwebsite@gmail.com>',
-        to: passwordResetData.email,
+        to: data.email,
         subject: 'Change password',
-        text: 'Reset password: http://localhost:8080/#/account/reset-password?email=' + passwordResetData.email + '&code=' + passwordResetData.forgotPasswordToken
-
+        text: 'Reset password: http://localhost:8080/#/account/reset-password?email=' + data.email + '&code=' + data.forgotPasswordToken
     };
     return mailOptions;
 }
+
