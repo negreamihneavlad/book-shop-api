@@ -45,7 +45,6 @@ function findOne(req, res) {
  */
 
 function list(req, res) {
-    console.log(req.query);
     book.findAll({
         offset: (req.query.page - 1) * 10,
         limit: 10,
@@ -125,7 +124,7 @@ function authors(req, res) {
 function length(req, res) {
     book.count({
         where: {
-             $or: [
+            $or: [
                 {name: {$like: '%' + _.get(req.query, 'toFind', '') + '%'}},
                 {author: {$like: '%' + _.get(req.query, 'toFind', '') + '%'}},
                 {category: {$like: '%' + _.get(req.query, 'toFind', '') + '%'}},
