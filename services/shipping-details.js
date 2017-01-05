@@ -2,7 +2,7 @@ var model = require('../services/model.js');
 var order = require('../services/order.js');
 var Sequelize = require('sequelize');
 
-module.exports = model.define('shipping-details', {
+module.exports = model.define('shipping_details', {
     id: {
         type: Sequelize.INTEGER,
         field: 'id',
@@ -28,6 +28,14 @@ module.exports = model.define('shipping-details', {
     email: {
         type: Sequelize.STRING,
         field: 'email'
+    },
+    country: {
+        type: Sequelize.STRING,
+        field: 'country'
+    },
+    city: {
+        type: Sequelize.STRING,
+        field: 'city'
     },
     phone: {
         type: Sequelize.INTEGER,
