@@ -11,6 +11,7 @@ var ejs = require('ejs'),
     str = fs.readFileSync('layout/templates/order-email.ejs', 'utf8');
 
 var transporter = nodemailer.createTransport('smtps://bookshopwebsite@gmail.com:bookshop1@smtp.gmail.com');
+
 /**
  * Send email to user
  *

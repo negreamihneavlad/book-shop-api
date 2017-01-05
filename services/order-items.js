@@ -11,12 +11,12 @@ module.exports = model.define('order_items', {
     },
     orderId: {
         type: Sequelize.INTEGER,
-        field: 'orderId'
-        // references: {
-        //     model: order,
-        //
-        //     key: 'id'
-        // }
+        field: 'orderId',
+        references: {
+            model: order,
+
+            key: 'id'
+        }
     },
     bookId: {
         type: Sequelize.INTEGER,
