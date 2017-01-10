@@ -8,6 +8,7 @@ var orderItemController = require('./controllers/order-item-controller.js');
 var shippingController = require('./controllers/shipping-controller.js');
 var checkOutController = require('./controllers/check-out-controller.js');
 var authStrategy = require('./services/auth-strategy.js');
+var braintree = require('./controllers/braintree-controller.js');
 var bodyParser = require('body-parser');
 
 var app = express();
@@ -64,6 +65,10 @@ app.delete('/shipping', shippingController.destroy);
 
 //////////Check out
 app.post('/check-out', checkOutController.checkOut);
+
+//////////Braintree
+app.get('/client-token', braintree.clientToken);
+app.post('/checkout', braintree.payment);
 
 
 app.listen(3000, function () {
