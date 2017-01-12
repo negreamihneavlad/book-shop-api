@@ -15,7 +15,10 @@ var order = require('../services/order.js');
  * @param res
  */
 function create(req, res) {
-    order.create(req.body)
+    order.create({
+        userId: req.user.id,
+        status: 0
+    })
         .then(function (order) {
             res.json(order);
         })
