@@ -49,7 +49,7 @@ app.get('/checkEmail', userController.existingEmail);
 //////////Orders
 app.post('/order', orderController.create);
 app.get('/order', passport.authenticate('bearer', {session: false}), orderController.checkOrder);
-app.delete('/order', orderController.destroy);
+app.delete('/order', passport.authenticate('bearer', {session: false}), orderController.destroy);
 
 //////////Order Items
 app.post('/orderItem', orderItemController.create);
