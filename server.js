@@ -47,7 +47,7 @@ app.put('/account/reset-password', userController.resetPassword);
 app.get('/checkEmail', userController.existingEmail);
 
 //////////Orders
-app.post('/order', orderController.create);
+app.post('/order', passport.authenticate('bearer', {session: false}), orderController.create);
 app.get('/order', passport.authenticate('bearer', {session: false}), orderController.checkOrder);
 app.delete('/order', passport.authenticate('bearer', {session: false}), orderController.destroy);
 
