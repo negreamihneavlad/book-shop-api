@@ -33,7 +33,6 @@ function create(req, res) {
  * @param res
  */
 function checkOrder(req, res) {
-    console.log(req.user.id);
     order.findOne({
         where: {
             userId: req.user.id
