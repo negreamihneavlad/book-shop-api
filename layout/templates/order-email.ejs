@@ -232,7 +232,7 @@
                                                                 <% items.forEach(function(item){ %>
                                                                 <% total += item.quantity * item.book.price %>
                                                                 <% }); %>
-                                                                <%= total %>$
+                                                                <%= total.toFixed(2) %>$
                                                             </td>
                                                         </tr>
                                                         </tbody>
