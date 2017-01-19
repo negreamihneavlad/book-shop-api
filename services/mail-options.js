@@ -17,7 +17,7 @@ function emailPasswordResetLink(data) {
         from: '"Book Shop" <bookshopwebsite@gmail.com>',
         to: data.email,
         subject: 'Change password',
-        text: 'Reset password: http://localhost:8080/#/account/reset-password?email=' + data.email + '&code=' + data.forgotPasswordToken
+        text: 'Reset password: '+process.env.HOST+'/#/account/reset-password?email=' + data.email + '&code=' + data.forgotPasswordToken
     };
     return mailOptions;
 }

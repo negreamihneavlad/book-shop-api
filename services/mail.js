@@ -5,12 +5,19 @@ module.exports = {
 ////////////////////////
 
 var nodemailer = require('nodemailer');
+var mg = require('nodemailer-mailgun-transport');
 var mailOptions = require('./mail-options.js');
 var ejs = require('ejs'),
     fs = require('fs'),
-    str = fs.readFileSync('layout/templates/order-email.ejs', 'utf8');
 
-var transporter = nodemailer.createTransport('smtps://bookshopwebsite@gmail.com:bookshop1@smtp.gmail.com');
+    str = fs.readFileSync('layout/templates/order-email.ejs', 'utf8');
+var auth = {
+    auth: {
+        api_key: process.env.MG_KEY,
+        domain: process.env.MG_DOMAIN
+    }
+};
+var transporter = nodemailer.createTransport(mg(auth));
 
 /**
  * Send email to user
