@@ -46,6 +46,10 @@ module.exports = model.define('books', {
     pages: {
         type: Sequelize.INTEGER,
         field: 'pages'
+    },
+    quantity: {
+        type: Sequelize.INTEGER,
+        field: 'quantity'
     }
 }, {
     freezeTableName: true
