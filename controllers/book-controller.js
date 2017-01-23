@@ -227,7 +227,6 @@ function update(req, res) {
  * @param res
  */
 function destroy(req, res) {
-    console.log(req.params.bookId);
     book.destroy({where: {id: req.params.bookId}})
         .then(function () {
             res.json();
