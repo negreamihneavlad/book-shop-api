@@ -5,7 +5,7 @@ module.exports = {
 
 ////////////////////////
 
-var braintree = require("braintree");
+var braintree = require("braintree"); // TODO: require first, then export as in the other files. While this works, please use the same pattern
 
 var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
@@ -26,7 +26,7 @@ function generateToken() {
             });
 
     })
-}
+} // TODO: Add empty line
 /**
  * Payment
  *
@@ -43,8 +43,9 @@ function payment(totalPrice, nonceFromTheClient) {
             }
         }, function (err, result) {
             resolve(result);
-            reject(err);
+            reject(err); // TODO: You resolve the promise, then immediately reject it. What's the reason?
         });
     })
 
 }
+// TODO: Use two spaces instead of tabs. Setup in Webstorm preferences.

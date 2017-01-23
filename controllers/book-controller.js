@@ -13,7 +13,7 @@ module.exports = {
 
 //////////////////////////////
 
-var _ = require('lodash');
+var _ = require('lodash'); // TODO: Require first, then export
 var book = require('../services/book.js');
 var Sequelize = require('sequelize');
 
@@ -48,7 +48,7 @@ function list(req, res) {
     book.findAll({
         offset: (req.query.page - 1) * 10,
         limit: 10,
-        where: {
+        where: { // TODO: This logic shouldn't be in the controller. The controller should not know that the model is defined by Sequelize. it should use the Book model like a black box, passing some simple parameters and getting back the results.
             $and: [
                 {author: {$like: '%' + _.get(req.query, 'author', '') + '%'}},
                 {category: {$like: '%' + _.get(req.query, 'category', '') + '%'}},
@@ -202,7 +202,7 @@ function update(req, res) {
             id: req.params.bookId
         }
     })
-        .then(function () {
+        .then(function () { // TODO: You can simplify this function. Let's discuss this one.
             book.findOne({
                     where: {
                         id: req.params.bookId

@@ -1,5 +1,5 @@
 module.exports = {
-    emailPasswordResetLink: emailPasswordResetLink
+    emailPasswordResetLink: emailPasswordResetLink // TODO: The name is confusing. By name I would say this module sends an email, but actually only generates some data. You can get rid of this file by creating the PasswordResetEmail and CheckoutEmail classes.
 };
 
 ////////////////////////

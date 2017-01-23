@@ -55,3 +55,4 @@ module.exports = model.define('shipping_details', {
 
 
 
+// TODO: Too many emoty lines at the end of the file. As a standard, use 1 empty line at the end of the file

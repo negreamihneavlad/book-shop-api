@@ -1,4 +1,4 @@
-var model = require('../services/model.js');
+var model = require('../services/model.js'); // TODO: Models should be always singular. Rename this file to order-item.
 var order = require('../services/order.js');
 var book = require('../services/book.js');
 var Sequelize = require('sequelize');
