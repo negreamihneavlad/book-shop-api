@@ -1,4 +1,4 @@
-var model = require('../services/model.js');
+var model = require('../modules/model.js');
 var Sequelize = require('sequelize');
 
 module.exports = model.define('books', {
@@ -54,4 +54,3 @@ module.exports = model.define('books', {
 }, {
   freezeTableName: true
 });
-

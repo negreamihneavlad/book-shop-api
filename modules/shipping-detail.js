@@ -1,5 +1,5 @@
-var model = require('../services/model.js');
-var order = require('../services/order.js');
+var model = require('./model.js');
+var order = require('./order.js');
 var Sequelize = require('sequelize');
 
 module.exports = model.define('shipping_details', {
@@ -52,6 +52,3 @@ module.exports = model.define('shipping_details', {
 }, {
   freezeTableName: true
 });
-
-
-// TODO: Too many emoty lines at the end of the file. As a standard, use 1 empty line at the end of the file

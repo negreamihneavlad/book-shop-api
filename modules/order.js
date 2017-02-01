@@ -1,5 +1,5 @@
-var model = require('../services/model.js');
-var user = require('../services/user.js');
+var model = require('../modules/model.js');
+var user = require('./user.js');
 var Sequelize = require('sequelize');
 
 module.exports = model.define('orders', {
