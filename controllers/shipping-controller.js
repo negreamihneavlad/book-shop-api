@@ -1,14 +1,14 @@
+var shipping = require('../services/shipping-service.js');
+
 module.exports = {
-    create: create,
-    list: list,
-    update: update,
-    destroy: destroy,
+  create: create,
+  list: list,
+  update: update,
+  destroy: destroy
 };
 
 //////////////////////////////
 
-var _ = require('lodash');
-var shipping = require('../services/shipping-details.js');
 /**
  * Add shipping details
  *
@@ -16,28 +16,27 @@ var shipping = require('../services/shipping-details.js');
  * @param res
  */
 function create(req, res) {
-    shipping.create(req.body)
-        .then(function (shipping) {
-            res.json(shipping);
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
+  shipping.create(req.body)
+    .then(function (shipping) {
+      res.json(shipping);
+    })
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
 }
 /**
  * Return shipping details
  *
- * @param req
  * @param res
  */
-function list(req, res) {
-    shipping.findAll()
-        .then(function (items) {
-            res.json(items);
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
+function list(res) {
+  shipping.list()
+    .then(function (items) {
+      res.json(items);
+    })
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
 }
 /**
  * Update shipping details
@@ -46,28 +45,13 @@ function list(req, res) {
  * @param res
  */
 function update(req, res) {
-    shipping.update(req.body, {
-        where: {
-            id: req.params.shippingId
-        }
+  shipping.update(req.body,req.params.shippingId)
+    .then(function(shippingData){
+      res.json(shippingData);
     })
-        .then(function () {
-            shipping.findOne({
-                    where: {
-                        id: req.params.shippingId
-                    }
-                }
-            ).then(function (itemSaved) {
-                res.json(itemSaved);
-            })
-                .catch(function (err) {
-                    res.status(500).send(err);
-                });
-
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
 }
 /**
  * Remove shipping details
@@ -76,11 +60,11 @@ function update(req, res) {
  * @param res
  */
 function destroy(req, res) {
-    shipping.destroy({where: {id: req.params.shippingId}})
-        .then(function () {
-            res.json();
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
+  shipping.destroy(req.params.shippingId)
+    .then(function () {
+      res.json();
+    })
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
 }
