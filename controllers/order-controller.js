@@ -1,13 +1,13 @@
+var order = require('../services/order-service.js');
+
 module.exports = {
-    create: create,
-    checkOrder: checkOrder,
-    destroy: destroy
+  create: create,
+  checkOrder: checkOrder,
+  destroy: destroy
 };
 
 //////////////////////////////
 
-var _ = require('lodash');
-var order = require('../services/order.js');
 /**
  * Create order
  *
@@ -15,16 +15,13 @@ var order = require('../services/order.js');
  * @param res
  */
 function create(req, res) {
-    order.create({
-        userId: req.user.id,
-        status: 0
+  order.create(req.user.id)
+    .then(function (order) {
+      res.json(order);
     })
-        .then(function (order) {
-            res.json(order);
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
 }
 /**
  * Check if order exists
@@ -33,17 +30,13 @@ function create(req, res) {
  * @param res
  */
 function checkOrder(req, res) {
-    order.findOne({
-        where: {
-            userId: req.user.id
-        }
+  order.getById(req.user.id)
+    .then(function (order) {
+      res.json(order);
     })
-        .then(function (order) {
-            res.json(order);
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
 }
 /**
  * Delete order
@@ -52,11 +45,11 @@ function checkOrder(req, res) {
  * @param res
  */
 function destroy(req, res) {
-    order.destroy({where: {id: req.query.orderId}})
-        .then(function () {
-            res.json();
-        })
-        .catch(function (err) {
-            res.status(500).send(err);
-        });
+  order.destroy(req.query.orderId)
+    .then(function () {
+      res.json();
+    })
+    .catch(function (err) {
+      res.status(500).send(err);
+    });
 }
