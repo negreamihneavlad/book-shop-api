@@ -46,7 +46,7 @@ function list(req, res) {
  * @param res
  */
 function update(req, res) {
-  orderItem.update(req.body, req, params.itemId)
+  orderItem.update(req.body, req.params.itemId)
     .then(function (itemSaved) {
       res.json(itemSaved);
     })

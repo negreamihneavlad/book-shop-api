@@ -7,6 +7,7 @@ var orderController = require('./controllers/order-controller.js');
 var orderItemController = require('./controllers/order-item-controller.js');
 var shippingController = require('./controllers/shipping-controller.js');
 var checkOutController = require('./controllers/check-out-controller.js');
+var newsletterEmailController = require('./controllers/newsletter-controller.js');
 var authStrategy = require('./services/auth-strategy.js');
 var braintree = require('./controllers/braintree-controller.js');
 var bodyParser = require('body-parser');
@@ -69,6 +70,9 @@ app.post('/check-out', checkOutController.checkOut);
 //////////Braintree
 app.get('/client-token', braintree.clientToken);
 app.post('/checkout', braintree.payment);
+
+/////////Newsletter
+app.post('/newsletter', newsletterEmailController.create);
 
 app.listen(3000, function () {
   console.log('Book Shop API listening on port 3000!');

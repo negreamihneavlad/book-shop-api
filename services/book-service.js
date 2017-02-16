@@ -45,8 +45,8 @@ function getById(bookId) {
  */
 function list(filters) {
   return book.findAll({
-    offset: (filters.page - 1) * 10,
-    limit: 10,
+    offset: (filters.page - 1) * 20,
+    limit: 20,
     where: {
       $and: [
         {author: {$like: '%' + _.get(filters, 'author', '') + '%'}},
@@ -152,8 +152,8 @@ function length(filters) {
  */
 function search(filters) {
   return book.findAll({
-    offset: (filters.page - 1) * 10,
-    limit: 10,
+    offset: (filters.page - 1) * 20,
+    limit: 20,
     where: {
       $or: [
         {name: {$like: '%' + filters.toFind + '%'}},
